@@ -30,10 +30,11 @@ class AppUtils {
   double scaleX, scaleY, scale;
 
   AppUtils(BuildContext context, {this.designWidth, this.designHeight}) {
-    if (instance != null &&
+    if (AppUtils.globalContext == null) AppUtils.globalContext = context;
+    if (AppUtils.instance != null &&
         (this.designWidth == null || this.designHeight == null)) {
-      this.designWidth = instance.designWidth;
-      this.designHeight = instance.designHeight;
+      this.designWidth = AppUtils.instance.designWidth;
+      this.designHeight = AppUtils.instance.designHeight;
     }
     AppUtils.instance = this;
     MediaQueryData mediaQuery = MediaQuery.of(context);
