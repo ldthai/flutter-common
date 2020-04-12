@@ -7,9 +7,17 @@ import 'package:http/http.dart';
 
 typedef dynamic DecodeData(dynamic json);
 
+enum HttpType { http, https }
+
+class HttpAuthType {
+  static const String basic = "Basic";
+  static const String bearer = "Bearer";
+}
+
 class Api {
-  static const String base = "lp040619.api.sentora.xyz";
-  static const String baseLink = "http://$base";
+  static String domain;
+  static HttpType httpType = HttpType.http;
+  static String httpAuthType = HttpAuthType.basic;
 
   static Future<Response> get(String link, {Map<String, String> params}) async {
     Response response = null;
@@ -21,11 +29,20 @@ class Api {
 
       if (token != null && token.length > 0)
         response = await Client().get(
-            link.contains("http", 0) ? link : Uri.http(base, link, params),
-            headers: {HttpHeaders.authorizationHeader: "Basic $token"});
+            link.contains("http", 0)
+                ? link
+                : (httpType == HttpType.http
+                    ? Uri.http(domain, link, params)
+                    : Uri.https(domain, link, params)),
+            headers: {HttpHeaders.authorizationHeader: "$httpAuthType $token"});
       else
         response = await Client().get(
-            link.contains("http", 0) ? link : Uri.http(base, link, params));
+          link.contains("http", 0)
+              ? link
+              : (httpType == HttpType.http
+                  ? Uri.http(domain, link, params)
+                  : Uri.https(domain, link, params)),
+        );
       if (response != null) {
         debugPrint("${response.body}", wrapWidth: 1024);
       }
@@ -44,15 +61,18 @@ class Api {
       if (params != null) debugPrint(json.encode(params));
 
       if (token != null && token.length > 0)
-        response = await Client().post(Uri.http(base, link),
+        response = await Client().post(
+            (httpType == HttpType.http
+                ? Uri.http(domain, link)
+                : Uri.https(domain, link)),
             body: params != null ? json.encode(params) : null,
             headers: {
-              HttpHeaders.authorizationHeader: "Basic $token",
+              HttpHeaders.authorizationHeader: "$httpAuthType $token",
               "Content-Type": "application/json"
             });
       else
         response = await Client().post(
-          Uri.http(base, link),
+          Uri.http(domain, link),
           headers: {"Content-Type": "application/json"},
           body: params != null ? json.encode(params) : null,
         );
@@ -75,12 +95,17 @@ class Api {
       String token = await AppData.getAccessToken();
 
       if (token != null && token.length > 0)
-        response = await Client().put(Uri.http(base, link),
+        response = await Client().put(
+            (httpType == HttpType.http
+                ? Uri.http(domain, link)
+                : Uri.https(domain, link)),
             body: params,
-            headers: {HttpHeaders.authorizationHeader: "Basic $token"});
+            headers: {HttpHeaders.authorizationHeader: "$httpAuthType $token"});
       else
         response = await Client().put(
-          Uri.http(base, link),
+          (httpType == HttpType.http
+              ? Uri.http(domain, link)
+              : Uri.https(domain, link)),
           body: params,
         );
       if (response != null) {
@@ -96,10 +121,15 @@ class Api {
       {Map<String, String> params}) async {
     String token = await AppData.getAccessToken();
     if (token != null && token.length > 0) {
-      return await Client().delete(Uri.http(base, link, params),
-          headers: {HttpHeaders.authorizationHeader: "Basic $token"});
+      return await Client().delete(
+          (httpType == HttpType.http
+              ? Uri.http(domain, link, params)
+              : Uri.https(domain, link, params)),
+          headers: {HttpHeaders.authorizationHeader: "$httpAuthType $token"});
     } else
-      return await Client().delete(Uri.http(base, link, params));
+      return await Client().delete(httpType == HttpType.http
+          ? Uri.http(domain, link, params)
+          : Uri.https(domain, link, params));
   }
 
   static BuildContext mainContext;
@@ -111,13 +141,16 @@ class Api {
   static Future<Response> postMutiplePart(String link,
       {List<MultipartFile> files, Map<String, String> params}) async {
     try {
-      if(params!=null)
-        debugPrint("$params");
+      if (params != null) debugPrint("$params");
 
-      final request = MultipartRequest("POST", Uri.http(base, link));
+      final request = MultipartRequest(
+          "POST",
+          (httpType == HttpType.http
+              ? Uri.http(domain, link)
+              : Uri.https(domain, link)));
       String token = await AppData.getAccessToken();
       Map<String, String> headers = {
-        HttpHeaders.authorizationHeader: "Basic $token",
+        HttpHeaders.authorizationHeader: "$httpAuthType $token",
         "Content-Type": "multipart/form-data"
       };
       request.headers.addAll(headers);
@@ -141,10 +174,14 @@ class Api {
   static Future<Response> putMutiplePart(String link,
       {List<MultipartFile> files, Map<String, String> params}) async {
     try {
-      final request = MultipartRequest("PUT", Uri.http(base, link));
+      final request = MultipartRequest(
+          "PUT",
+          (httpType == HttpType.http
+              ? Uri.http(domain, link)
+              : Uri.https(domain, link)));
       String token = await AppData.getAccessToken();
       Map<String, String> headers = {
-        HttpHeaders.authorizationHeader: "Basic $token",
+        HttpHeaders.authorizationHeader: "$httpAuthType $token",
         "Content-Type": "multipart/form-data"
       };
       request.headers.addAll(headers);
