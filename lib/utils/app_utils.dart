@@ -465,6 +465,19 @@ class AppUtils {
       throw 'Could not launch $url';
     }
   }
+
+  static int hexStringToHexInt(String hex) {
+    hex = hex.replaceFirst('#', '');
+    hex = hex.length == 6 ? 'ff' + hex : hex;
+    int val = int.parse(hex, radix: 16);
+    return val;
+  }
+
+  static Color colorFromString(String color) {
+    return color != null && color.length > 0
+        ? Color(hexStringToHexInt(color))
+        : Colors.transparent;
+  }
 }
 
 typedef OnDateCallback(DateTime value);
