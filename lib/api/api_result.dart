@@ -6,6 +6,10 @@ import 'package:http/http.dart';
 import 'api.dart';
 
 class ApiResult<T> {
+  static String keyStatus = "status";
+  static String keyData = "data";
+  static String keyMsg = "msg";
+
   int status;
   String _msg;
   T data;
@@ -29,14 +33,13 @@ class ApiResult<T> {
         if (result != null) {
           try {
             apiResult =
-                ApiResult<T>(status: result["status"], msg: result["msg"]);
+                ApiResult<T>(status: result[keyStatus], msg: result[keyMsg]);
           } catch (e) {
             debugPrint("$e");
           }
           try {
-
-            if (decodeData != null && result["data"] != null) {
-              apiResult.data = decodeData(result["data"]);
+            if (decodeData != null && result[keyData] != null) {
+              apiResult.data = decodeData(result[keyData]);
             }
           } catch (e) {
             debugPrint("$e");
