@@ -76,7 +76,7 @@ class Api {
               ? Uri.http(domain, link)
               : Uri.https(domain, link)),
           headers: {"Content-Type": "application/json"},
-          body: params != null ? json.encode(params) : null,
+          body: params != null ? params: null,
         );
       if (response != null) {
         debugPrint("${json.encode(json.decode(response.body))}",
