@@ -72,7 +72,9 @@ class Api {
             });
       else
         response = await Client().post(
-          Uri.http(domain, link),
+          (httpType == HttpType.http
+              ? Uri.http(domain, link)
+              : Uri.https(domain, link)),
           headers: {"Content-Type": "application/json"},
           body: params != null ? json.encode(params) : null,
         );
