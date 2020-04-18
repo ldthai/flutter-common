@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 typedef Future<List> DataRequester(int offset);
-typedef Future<List> InitRequester();
+//typedef Future<List> InitRequester();
 typedef Widget ItemBuilder(List data, BuildContext context, int index);
 
 class MyListView extends StatefulWidget {
@@ -11,16 +11,16 @@ class MyListView extends StatefulWidget {
       this.header,
       @required this.itemBuilder,
       @required this.dataRequester,
-      @required this.initRequester,
+      //@required this.initRequester,
       this.textHint = "Không có dữ liệu"})
       : assert(itemBuilder != null),
         assert(dataRequester != null),
-        assert(initRequester != null),
+        //assert(initRequester != null),
         super(key: key);
 
   final ItemBuilder itemBuilder;
   final DataRequester dataRequester;
-  final InitRequester initRequester;
+  //final InitRequester initRequester;
   Widget header;
   String textHint;
 
@@ -113,7 +113,7 @@ class MyListViewState extends State<MyListView> {
         isLoading = true;
         this._dataList = List();
       });
-      List initDataList = await widget.initRequester();
+      List initDataList = await widget.dataRequester(0);
       if (initDataList != null) this._dataList = initDataList;
       isLoading = false;
       this.setState(() {});
