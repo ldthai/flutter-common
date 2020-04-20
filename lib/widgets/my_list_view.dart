@@ -11,7 +11,7 @@ class MyListView extends StatefulWidget {
       this.header,
       @required this.itemBuilder,
       @required this.dataRequester,
-      //@required this.initRequester,
+      this.needLoadMore = true,
       this.textHint = "Không có dữ liệu"})
       : assert(itemBuilder != null),
         assert(dataRequester != null),
@@ -20,9 +20,11 @@ class MyListView extends StatefulWidget {
 
   final ItemBuilder itemBuilder;
   final DataRequester dataRequester;
+
   //final InitRequester initRequester;
   Widget header;
   String textHint;
+  bool needLoadMore;
 
   @override
   State createState() => new MyListViewState();
@@ -38,7 +40,8 @@ class MyListViewState extends State<MyListView> {
     super.initState();
     this.onRefresh();
     _controller.addListener(() {
-      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent &&
+          widget.needLoadMore) {
         _loadMore();
       }
     });
