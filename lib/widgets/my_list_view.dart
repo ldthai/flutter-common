@@ -177,6 +177,9 @@ class MyListViewState extends State<MyListView> {
         });
     }
   }
+  List getData(){
+    return this._dataList;
+  }
 }
 
 Widget loadingProgress(loadingColor) {
