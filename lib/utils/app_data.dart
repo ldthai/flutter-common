@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppData {
-  static const base = "com.huesoft.luathinhtri";
+  static const base = "hethongphanhoi.com";
   static String keyAccessToken = "$base/keyAccessToken";
   static String keyUserType = "$base/keyUserType";
   static String keyFirebaseCloudMessageToken =
