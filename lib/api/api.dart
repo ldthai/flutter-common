@@ -34,15 +34,18 @@ class Api {
                 : (httpType == HttpType.http
                     ? Uri.http(domain, link, params)
                     : Uri.https(domain, link, params)),
-            headers: {HttpHeaders.authorizationHeader: "$httpAuthType $token"});
+            headers: {
+              HttpHeaders.authorizationHeader: "$httpAuthType $token",
+              "Access-Control-Allow-Origin": "*"
+            });
       else
         response = await Client().get(
-          link.contains("http", 0)
-              ? link
-              : (httpType == HttpType.http
-                  ? Uri.http(domain, link, params)
-                  : Uri.https(domain, link, params)),
-        );
+            link.contains("http", 0)
+                ? link
+                : (httpType == HttpType.http
+                    ? Uri.http(domain, link, params)
+                    : Uri.https(domain, link, params)),
+            headers: {"Access-Control-Allow-Origin": "*"});
       if (response != null) {
         debugPrint("${response.body}", wrapWidth: 1024);
       }
@@ -68,14 +71,18 @@ class Api {
             body: params != null ? json.encode(params) : null,
             headers: {
               HttpHeaders.authorizationHeader: "$httpAuthType $token",
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
             });
       else
         response = await Client().post(
           (httpType == HttpType.http
               ? Uri.http(domain, link)
               : Uri.https(domain, link)),
-          headers: {"Content-Type": "application/json"},
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          },
           body: params != null ? json.encode(params) : null,
         );
       if (response != null) {
@@ -102,12 +109,16 @@ class Api {
                 ? Uri.http(domain, link)
                 : Uri.https(domain, link)),
             body: params,
-            headers: {HttpHeaders.authorizationHeader: "$httpAuthType $token"});
+            headers: {
+              HttpHeaders.authorizationHeader: "$httpAuthType $token",
+              "Access-Control-Allow-Origin": "*"
+            });
       else
         response = await Client().put(
           (httpType == HttpType.http
               ? Uri.http(domain, link)
               : Uri.https(domain, link)),
+          headers: {"Access-Control-Allow-Origin": "*"},
           body: params,
         );
       if (response != null) {
@@ -127,11 +138,16 @@ class Api {
           (httpType == HttpType.http
               ? Uri.http(domain, link, params)
               : Uri.https(domain, link, params)),
-          headers: {HttpHeaders.authorizationHeader: "$httpAuthType $token"});
+          headers: {
+            HttpHeaders.authorizationHeader: "$httpAuthType $token",
+            "Access-Control-Allow-Origin": "*"
+          });
     } else
-      return await Client().delete(httpType == HttpType.http
-          ? Uri.http(domain, link, params)
-          : Uri.https(domain, link, params));
+      return await Client().delete(
+          httpType == HttpType.http
+              ? Uri.http(domain, link, params)
+              : Uri.https(domain, link, params),
+          headers: {"Access-Control-Allow-Origin": "*"});
   }
 
   static BuildContext mainContext;
@@ -153,7 +169,8 @@ class Api {
       String token = await AppData.getAccessToken();
       Map<String, String> headers = {
         HttpHeaders.authorizationHeader: "$httpAuthType $token",
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*"
       };
       request.headers.addAll(headers);
       if (params != null) request.fields.addAll(params);
@@ -184,7 +201,8 @@ class Api {
       String token = await AppData.getAccessToken();
       Map<String, String> headers = {
         HttpHeaders.authorizationHeader: "$httpAuthType $token",
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*"
       };
       request.headers.addAll(headers);
       if (params != null) request.fields.addAll(params);
